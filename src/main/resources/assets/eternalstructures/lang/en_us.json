@@ -1,0 +1,9 @@
+{
+  "eternalstructures.message.wrong_key_id": "That key doesn't fit in the lock.",
+  "eternalstructures.message.bound_key": "That key is now bound to this door.",
+  "eternalstructures.message.need_door_key": "You must be holding a key to unlock this door.",
+  "eternalstructures.message.door_unlock": "The door unlocks!.",
+  "eternalstructures.item.skill_key": "Skull Key",
+  "eternalstructures.item.slime_skill_key": "Slimy Skull Key",
+  "eternalstructures.block.dungeon_door": "Dungeon Door"
+}
