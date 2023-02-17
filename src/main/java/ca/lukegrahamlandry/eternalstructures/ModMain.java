@@ -17,5 +17,6 @@ public class ModMain {
         GeckoLib.initialize();
         ModRegistry.init(FMLJavaModLoadingContext.get().getModEventBus());
         NetworkHandler.registerMessages();
+        ESConfig.loadConfig();
     }
 }

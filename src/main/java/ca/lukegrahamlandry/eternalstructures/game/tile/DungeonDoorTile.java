@@ -1,5 +1,6 @@
 package ca.lukegrahamlandry.eternalstructures.game.tile;
 
+import ca.lukegrahamlandry.eternalstructures.ESConfig;
 import ca.lukegrahamlandry.eternalstructures.ModMain;
 import ca.lukegrahamlandry.eternalstructures.game.ModRegistry;
 import ca.lukegrahamlandry.eternalstructures.game.block.DungeonDoorBlock;
@@ -11,7 +12,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
@@ -29,8 +29,6 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
-import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.Random;
 
 public class DungeonDoorTile extends TileEntity implements IAnimatable, ITickableTileEntity {
@@ -54,7 +52,7 @@ public class DungeonDoorTile extends TileEntity implements IAnimatable, ITickabl
         if (!(stack.getItem() instanceof DungeonKeyItem)){
             if (this.locked && !player.isCreative()){
                 player.displayClientMessage(new TranslationTextComponent("eternalstructures.message.need_door_key"), true);
-            } else {
+            } else if (ESConfig.allowClosingUnlockedDungeonDoors.get()){
                 this.open = !this.open;
                 if (this.open) this.sendAnimationState(ANIM_START_OPEN);
                 else this.sendAnimationState(ANIM_START_CLOSE);
@@ -65,6 +63,7 @@ public class DungeonDoorTile extends TileEntity implements IAnimatable, ITickabl
             player.setItemInHand(hand, stack);
             this.locked = true;
             this.open = false;
+            this.sendAnimationState(ANIM_SET_CLOSE);
         } else {
             int keyId = DungeonKeyItem.getKeyId(stack);
             if (keyId != this.doorId) {

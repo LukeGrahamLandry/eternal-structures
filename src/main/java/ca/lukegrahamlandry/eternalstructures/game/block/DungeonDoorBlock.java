@@ -70,7 +70,6 @@ public class DungeonDoorBlock extends ToggleBlock {
         return this.defaultBlockState().setValue(OPEN, false).setValue(HorizontalBlock.FACING, p_196258_1_.getHorizontalDirection().getOpposite());
     }
 
-
     public static Direction getFacing(BlockState blockState) {
         return blockState.getValue(HorizontalBlock.FACING);
     }
