@@ -17,5 +17,8 @@ public class DataGenerationSetup {
         if (event.includeClient()){
             gen.addProvider(new ModBlockStateProvider(gen, existing));
         }
+        if (event.includeServer()){
+            gen.addProvider(new ModLootTableProvider(gen));
+        }
     }
 }

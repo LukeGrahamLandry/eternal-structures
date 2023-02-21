@@ -22,11 +22,6 @@ public class DungeonDoorRenderer extends GeoBlockRenderer<DungeonDoorTile> {
     }
 
     @Override
-    public RenderType getRenderType(DungeonDoorTile animatable, float partialTicks, MatrixStack stack, @Nullable IRenderTypeBuffer renderTypeBuffer, @Nullable IVertexBuilder vertexBuilder, int packedLightIn, ResourceLocation textureLocation) {
-        return super.getRenderType(animatable, partialTicks, stack, renderTypeBuffer, vertexBuilder, packedLightIn, textureLocation);
-    }
-
-    @Override
     public void render(DungeonDoorTile tile, float partialTicks, MatrixStack stack, IRenderTypeBuffer bufferIn, int packedLightIn) {
         super.render(tile, partialTicks, stack, bufferIn, 0xFFFFFF);  // fixes the weird shadow but im sure there's a better way
     }

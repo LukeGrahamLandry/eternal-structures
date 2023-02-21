@@ -14,7 +14,17 @@
 				}
 			}
 		},
-		"closed": {
+		"open_idle": {
+			"animation_length": 1,
+			"bones": {
+				"bone": {
+					"rotation": {
+						"0.0": [-90, 0, 0]
+					}
+				}
+			}
+		},
+		"idle": {
 			"loop": true
 		}
 	},

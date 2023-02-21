@@ -2,10 +2,13 @@ package ca.lukegrahamlandry.eternalstructures.game;
 
 import ca.lukegrahamlandry.eternalstructures.ModMain;
 import ca.lukegrahamlandry.eternalstructures.game.block.DungeonDoorBlock;
+import ca.lukegrahamlandry.eternalstructures.game.block.LootBlock;
 import ca.lukegrahamlandry.eternalstructures.game.block.PlaceHolderBlock;
 import ca.lukegrahamlandry.eternalstructures.game.block.SpikesBlock;
 import ca.lukegrahamlandry.eternalstructures.game.item.DungeonKeyItem;
+import ca.lukegrahamlandry.eternalstructures.game.item.GeoBlockItem;
 import ca.lukegrahamlandry.eternalstructures.game.tile.DungeonDoorTile;
+import ca.lukegrahamlandry.eternalstructures.game.tile.LootTile;
 import ca.lukegrahamlandry.eternalstructures.game.tile.PlaceHolderTile;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
@@ -40,6 +43,10 @@ public class ModRegistry {
             return REGISTRY.register(name + "_spikes", () -> new SpikesBlock(damage, damageType));
         }
 
+        private static void createLoot(String name, LootTile.Type type){
+            LOOT.add(REGISTRY.register(name, () -> new LootBlock(type)));
+        }
+
         public static List<RegistryObject<Block>> SPIKES = Arrays.asList(
             createSpike(2, DamageSource.GENERIC, "ice"),
             createSpike(1, DamageSource.GENERIC, "wood"),
@@ -48,8 +55,20 @@ public class ModRegistry {
             createSpike(5, DamageSource.GENERIC, "iron"),
             createSpike(3, DamageSource.GENERIC, "oxi_copper"),
             createSpike(5, DamageSource.GENERIC, "bloody_iron")
-            // , createSpike(8, DamageSource.IN_FIRE, "netherite")
         );
+
+        public static List<RegistryObject<Block>> LOOT = new ArrayList<>();
+
+        static {
+            Arrays.asList("clay", "marble", "mushroom", "nether", "rusted", "stone", "water").forEach((name) -> {
+                createLoot(name + "_pot", LootTile.Type.POT);
+            });
+            createLoot("crystal_pot", LootTile.Type.CRYSTAL_POT);
+            createLoot("golden_pot", LootTile.Type.GOLDEN_POT);
+            createLoot("mushroom_chest", LootTile.Type.CHEST);
+            createLoot("corrupted_chest", LootTile.Type.CHEST);
+        }
+
     }
 
     public static class Items {
@@ -64,6 +83,9 @@ public class ModRegistry {
             for (RegistryObject<Block> block : Blocks.SPIKES){
                 REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), PROPS));
             }
+            for (RegistryObject<Block> block : Blocks.LOOT){
+                REGISTRY.register(block.getId().getPath(), () -> new GeoBlockItem(block.get(), PROPS));
+            }
         }
     }
 
@@ -73,9 +95,11 @@ public class ModRegistry {
         public static RegistryObject<TileEntityType<?>> DUNGEON_DOOR = REGISTRY.register("dungeon_door",
                 () -> TileEntityType.Builder.of(DungeonDoorTile::new, Blocks.DUNGEON_DOOR.get()).build(null));
 
-
         public static RegistryObject<TileEntityType<?>> PLACE_HOLDER = REGISTRY.register("place_holder",
                 () -> TileEntityType.Builder.of(PlaceHolderTile::new, Blocks.PLACE_HOLDER.get()).build(null));
+
+        public static RegistryObject<TileEntityType<?>> LOOT = REGISTRY.register("loot",
+                () -> TileEntityType.Builder.of(LootTile::create, Blocks.LOOT.stream().map(RegistryObject::get).toArray(Block[]::new)).build(null));
     }
 
     public static final ItemGroup TAB = new ItemGroup(0, ModMain.MOD_ID) {

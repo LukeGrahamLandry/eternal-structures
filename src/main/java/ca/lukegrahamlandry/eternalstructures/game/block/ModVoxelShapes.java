@@ -11,6 +11,31 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 public class ModVoxelShapes {
+    public static final VoxelShape POT = Stream.of(
+            Block.box(3, 1, 3, 13, 11, 13),
+            Block.box(4, 11, 4, 12, 13, 12),
+            Block.box(3.4999999999999982, 0, 3.4999999999999982, 12.499999999999998, 1, 12.499999999999998)
+            ).reduce((v1, v2) -> VoxelShapes.join(v1, v2, IBooleanFunction.OR)).get();
+
+    public static final VoxelShape CHEST = Stream.of(
+            Stream.of(
+                    Block.box(-1, 6, 2.4999999999999982, 1, 12, 14.499999999999998),
+                    Block.box(1, 6, 2.4999999999999982, 15, 12, 14.499999999999998),
+                    Block.box(15, 6, 2.4999999999999982, 17, 12, 14.499999999999998),
+                    Block.box(4, 3, 2, 12, 10, 3),
+                    Block.box(12, 12, 8.499999999999998, 20, 20, 8.499999999999998),
+                    Block.box(12, 12, 8.499999999999998, 20, 20, 8.499999999999998),
+                    Block.box(4, 12, 4.499999999999998, 12, 20, 4.499999999999998),
+                    Block.box(4, 12, 4.499999999999998, 12, 20, 4.499999999999998)
+            ).reduce((v1, v2) -> VoxelShapes.join(v1, v2, IBooleanFunction.OR)).get(),
+            Block.box(0, 0, 3, 16, 6, 14)
+            ).reduce((v1, v2) -> VoxelShapes.join(v1, v2, IBooleanFunction.OR)).get();
+
+    public static VoxelShape rotatedChest(Direction facing){
+        if (facing == Direction.EAST || facing == Direction.NORTH) return rotateAroundVertical(Direction.NORTH, facing, CHEST);
+        else return rotateAroundVertical(Direction.WEST, facing, CHEST);
+    }
+
     public static VoxelShape getSpikeShape(boolean isOut, Direction facing){
         return isOut ? SPIKES_OUT_SHAPE.get(facing) : SPIKES_IN_SHAPE.get(facing);
     }

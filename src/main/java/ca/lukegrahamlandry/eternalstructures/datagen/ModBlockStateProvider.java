@@ -3,11 +3,13 @@ package ca.lukegrahamlandry.eternalstructures.datagen;
 import ca.lukegrahamlandry.eternalstructures.ModMain;
 import ca.lukegrahamlandry.eternalstructures.game.ModRegistry;
 import ca.lukegrahamlandry.eternalstructures.game.block.SpikesBlock;
+import ca.lukegrahamlandry.eternalstructures.game.item.GeoBlockItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fml.RegistryObject;
@@ -39,6 +41,11 @@ public class ModBlockStateProvider extends BlockStateProvider {
 
             // block state file that accounts for the facing direction and <isOut>
             directionalBlock(block.get(), isOut);
+        }
+
+        for (RegistryObject<Block> block : ModRegistry.Blocks.LOOT){
+            itemModels().getBuilder(block.getId().getPath()).parent(new ModelFile.UncheckedModelFile("builtin/entity"))
+                    .transforms().transform(ModelBuilder.Perspective.GUI).translation(0, -6, 0).scale(0.75F);
         }
     }
 }

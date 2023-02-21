@@ -46,7 +46,6 @@ public class DungeonDoorTile extends TileEntity implements IAnimatable, ITickabl
     public void onClick(PlayerEntity player, Hand hand){
         if (hand != Hand.MAIN_HAND) return;
 
-        ModMain.LOGGER.debug(player.getScoreboardName() + " clicked door at " + this.getBlockPos());
         ItemStack stack = player.getItemInHand(hand);
 
         if (!(stack.getItem() instanceof DungeonKeyItem)){

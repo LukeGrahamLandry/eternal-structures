@@ -1,6 +1,7 @@
 package ca.lukegrahamlandry.eternalstructures.client.render;
 
 import ca.lukegrahamlandry.eternalstructures.ModMain;
+import ca.lukegrahamlandry.eternalstructures.client.IGeoInfo;
 import net.minecraft.util.ResourceLocation;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
@@ -33,5 +34,22 @@ public class GenericGeoModel<T extends IAnimatable> extends AnimatedGeoModel<T> 
     @Override
     public ResourceLocation getAnimationFileLocation(T object) {
         return animationResource;
+    }
+
+    public static class Wrap<T extends IAnimatable & IGeoInfo> extends AnimatedGeoModel<T>{
+        @Override
+        public ResourceLocation getModelLocation(T object) {
+            return object.getModelResource();
+        }
+
+        @Override
+        public ResourceLocation getTextureLocation(T object) {
+            return object.getTextureResource();
+        }
+
+        @Override
+        public ResourceLocation getAnimationFileLocation(T object) {
+            return object.getAnimationResource();
+        }
     }
 }
