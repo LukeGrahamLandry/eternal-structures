@@ -1,5 +1,6 @@
 package ca.lukegrahamlandry.eternalstructures.game.tile;
 
+import ca.lukegrahamlandry.eternalstructures.ModMain;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,7 +24,10 @@ public class LootrLootTile extends LootTile implements ILootTile {
 
         ResourceLocation actual = forcedTable != null ? forcedTable : this.savedLootTable;
         LootTable table = this.level.getServer().getLootTables().get(actual);
-        if (table == LootTable.EMPTY) return;
+        if (table == LootTable.EMPTY) {
+            ModMain.LOGGER.error("Invalid container loot table: " + actual);
+            return;
+        }
 
         CriteriaTriggers.GENERATE_LOOT.trigger((ServerPlayerEntity)player, actual);
 
@@ -33,6 +37,7 @@ public class LootrLootTile extends LootTile implements ILootTile {
                 .create(LootParameterSets.CHEST);
 
         table.fill(inv, ctx);
+        this.setChanged();
     }
 
     @Override
@@ -52,6 +57,6 @@ public class LootrLootTile extends LootTile implements ILootTile {
 
     @Override
     public void updatePacketViaState() {
-
+        this.setChanged();
     }
 }

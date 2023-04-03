@@ -15,14 +15,13 @@ public class ESConfig {
     private static final ForgeConfigSpec.Builder server_builder = new ForgeConfigSpec.Builder();
     public static ForgeConfigSpec server_config;
 
-    private static ForgeConfigSpec.ConfigValue<List<? extends Integer>> enchantDiskSizes;
     public static ForgeConfigSpec.BooleanValue allowClosingUnlockedDungeonDoors;
     public static ForgeConfigSpec.IntValue spikeDetectionRange;
     public static ForgeConfigSpec.IntValue spikeUpdateDelay;
 
     private static void init(){
         allowClosingUnlockedDungeonDoors = server_builder
-                .comment("Let's dungeon doors be toggled like normal doors once unlocked.")
+                .comment("Lets dungeon doors be toggled like normal doors once unlocked.")
                 .define("allowClosingUnlockedDungeonDoors", false);
 
         spikeDetectionRange = server_builder
