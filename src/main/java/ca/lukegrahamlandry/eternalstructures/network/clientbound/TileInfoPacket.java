@@ -1,8 +1,6 @@
 package ca.lukegrahamlandry.eternalstructures.network.clientbound;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -26,17 +24,8 @@ public class TileInfoPacket {
     }
 
     public static void handle(TileInfoPacket packet, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> handle(packet));
+        ctx.get().enqueueWork(() -> ClientPacketHandlers.handle(packet));
         ctx.get().setPacketHandled(true);
-    }
-
-    private static void handle(TileInfoPacket packet) {
-        if (Minecraft.getInstance().level == null) return;
-        
-        TileEntity tile = Minecraft.getInstance().level.getBlockEntity(packet.pos);
-        if (tile instanceof Receiver){
-            ((Receiver) tile).onInfoPacket(packet.data);
-        }
     }
 
     public interface Receiver {

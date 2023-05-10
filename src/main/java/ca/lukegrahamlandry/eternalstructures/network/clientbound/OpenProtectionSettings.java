@@ -1,9 +1,7 @@
 package ca.lukegrahamlandry.eternalstructures.network.clientbound;
 
-import ca.lukegrahamlandry.eternalstructures.client.gui.ProtectionSettingsGui;
 import ca.lukegrahamlandry.eternalstructures.json.JsonHelper;
 import ca.lukegrahamlandry.eternalstructures.protect.ProtectionInstance;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -34,12 +32,7 @@ public class OpenProtectionSettings {
     }
 
     public static void handle(OpenProtectionSettings packet, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> handle(packet));
+        ctx.get().enqueueWork(() -> ClientPacketHandlers.handle(packet));
         ctx.get().setPacketHandled(true);
-    }
-
-    private static void handle(OpenProtectionSettings packet) {
-        if (Minecraft.getInstance().level == null) return;
-        Minecraft.getInstance().setScreen(new ProtectionSettingsGui(packet.pos, JsonHelper.get().toJson(packet.data)));
     }
 }

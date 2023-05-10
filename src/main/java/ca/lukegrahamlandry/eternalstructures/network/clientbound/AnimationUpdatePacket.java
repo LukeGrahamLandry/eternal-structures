@@ -1,9 +1,6 @@
 package ca.lukegrahamlandry.eternalstructures.network.clientbound;
 
-import ca.lukegrahamlandry.eternalstructures.game.tile.DungeonDoorTile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -27,16 +24,7 @@ public class AnimationUpdatePacket {
     }
 
     public static void handle(AnimationUpdatePacket packet, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> handle(packet));
+        ctx.get().enqueueWork(() -> ClientPacketHandlers.handle(packet));
         ctx.get().setPacketHandled(true);
-    }
-
-    private static void handle(AnimationUpdatePacket packet) {
-        if (Minecraft.getInstance().level == null) return;
-        
-        TileEntity tile = Minecraft.getInstance().level.getBlockEntity(packet.pos);
-        if (tile instanceof DungeonDoorTile){
-            ((DungeonDoorTile) tile).setClientAnimationState(packet.animationState);
-        }
     }
 }
