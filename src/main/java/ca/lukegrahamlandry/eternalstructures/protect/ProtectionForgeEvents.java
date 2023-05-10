@@ -39,7 +39,21 @@ public class ProtectionForgeEvents {
     }
 
     @SubscribeEvent
-    public static void onUse(PlayerInteractEvent event){
+    public static void onClickAir(PlayerInteractEvent.RightClickItem event){
+        onUseAny(event);
+    }
+
+    @SubscribeEvent
+    public static void clickOnEntity(PlayerInteractEvent.EntityInteract event){
+        onUseAny(event);
+    }
+
+    @SubscribeEvent
+    public static void clickOnBlock(PlayerInteractEvent.RightClickBlock event){
+        onUseAny(event);
+    }
+
+    private static void onUseAny(PlayerInteractEvent event) {
         if (event.getSide() == LogicalSide.CLIENT) return;
         for (ProtectionInstance p : ProtectionManager.getAll()){
             if (p.preventItemInteract(event.getPlayer(), event.getPos(), event.getItemStack())) {

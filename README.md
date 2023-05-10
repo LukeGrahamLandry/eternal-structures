@@ -56,11 +56,10 @@ Example:
     }
   ],
   "preventBreakAndPlace": true,
-  "preventInteract": true
+  "preventRightClick": ["minecraft:ender_pearl"],
+  "disableFlight": true
 }
 ```
-
-preventInteract currently stops all left/right clicks, I'll make it more fine-grained soon. 
 
 ## TODO (maybe?)
 
@@ -107,7 +106,7 @@ preventInteract currently stops all left/right clicks, I'll make it more fine-gr
 - Places a cube of barrier blocks outlining a set range
   - Optional timer to remove the cube 
   - Option to remove the cube on the collection of a selectable item
-- stop flight in the radius, creative, elytra and if possible "jetpack" type of flight
+- stop "jetpack" type of flight in the radius
 - enter items that right click won't work in a radius, eg ender pearls or special devices players could use for breaking blocks
    - data pack tag. configure per protection block.
 - instant death if you enter a range without the access item
