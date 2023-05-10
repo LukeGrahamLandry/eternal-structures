@@ -16,7 +16,10 @@ import net.minecraft.world.World;
 
 import static net.minecraft.block.DoorBlock.OPEN;
 
-public class ToggleBlock extends Block {
+/* Has a block state property that lets you toggle the collision shape on and off.
+ * This doesn't get registered directly. Other blocks that need this behaviour just extend it.
+ */
+public abstract class ToggleBlock extends Block {
     public ToggleBlock(Properties p_i48440_1_) {
         super(p_i48440_1_.dynamicShape());
         this.registerDefaultState(this.stateDefinition.any().setValue(OPEN, Boolean.FALSE));

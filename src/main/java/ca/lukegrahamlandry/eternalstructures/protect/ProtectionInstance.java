@@ -16,6 +16,7 @@ public class ProtectionInstance {
         private int radius = 5;
         private List<EffectInstance> potionEffects = new ArrayList<>();
         private boolean preventBreakAndPlace = true;
+        private boolean preventInteract = true;
     }
 
     private final ServerWorld level;
@@ -44,7 +45,10 @@ public class ProtectionInstance {
     }
 
     private void onPlayerTick(PlayerEntity player){
-        for (EffectInstance effect : this.settings.potionEffects){
+        // There's one instance of the class that gets parsed out of the json so if you give that to someone,
+        // the duration will tick down and never be able to be applied again. Instead, make sure to use a new copy every time.
+        for (EffectInstance baseEffect : this.settings.potionEffects){
+            EffectInstance effect = new EffectInstance(baseEffect.getEffect(), baseEffect.getDuration(), baseEffect.getAmplifier());
             player.addEffect(effect);
         }
     }
@@ -71,10 +75,11 @@ public class ProtectionInstance {
     // Called for item, block or entity. The pos will be the target if applicable or the player if item clicked on air.
     boolean preventItemInteract(PlayerEntity player, BlockPos pos, ItemStack stack) {
         if (!this.contains(pos) || ignore(player)) return false;
-        return true;
+        return this.settings.preventInteract;
     }
 
     private boolean ignore(PlayerEntity check){
+        if (check.isCreative()) return true;
         return false;  // Use for the fancy item
     }
 

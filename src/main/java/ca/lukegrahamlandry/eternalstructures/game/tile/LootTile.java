@@ -179,13 +179,19 @@ public class LootTile extends ChestTileEntity implements IAnimatable, ITickableT
                     break;
             }
         } catch (IllegalArgumentException ignored){
-
+            ModMain.LOGGER.error("Server sent unrecognised AnimUpdate name {}", s);
         }
     }
 
     @Override
     public CompoundNBT save(CompoundNBT tag) {
+        // TODO: using Create schematic causes NullPointerException here.
+        //       mouseClicked event handler -> confirm(SchematicPromptScreen.java:120) -> saveSchematic(SchematicAndQuillHandler.java:214) -> func_186254_a(Template.java:86)
+        //       Maybe they're doing something weird but also I shouldn't be dependent on there always being a loot table set.
+        //       Need to make it drop as a normal container anyway so might come up then.
         tag.putString("es_LootrSavedLootTable", this.savedLootTable.toString());
+
+
         tag.putUUID("es_id", this.uuid);
         ListNBT list = new ListNBT();
         list.addAll(this.openers.stream().map(NBTUtil::createUUID).collect(Collectors.toSet()));

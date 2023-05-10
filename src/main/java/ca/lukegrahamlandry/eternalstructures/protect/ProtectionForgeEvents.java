@@ -43,7 +43,7 @@ public class ProtectionForgeEvents {
         if (event.getSide() == LogicalSide.CLIENT) return;
         for (ProtectionInstance p : ProtectionManager.getAll()){
             if (p.preventItemInteract(event.getPlayer(), event.getPos(), event.getItemStack())) {
-                event.getPlayer().displayClientMessage(new StringTextComponent("Cannot use item in structure."), true);
+                event.getPlayer().displayClientMessage(new StringTextComponent("Cannot interact in structure."), true);
                 event.setCancellationResult(ActionResultType.FAIL);
                 event.setCanceled(true);
                 return;

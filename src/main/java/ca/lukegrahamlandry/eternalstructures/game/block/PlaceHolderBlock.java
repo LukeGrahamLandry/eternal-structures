@@ -15,6 +15,9 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
+/* Forwards right clicks to a different block.
+ * Used for opening the big doors by right-clicking any of the spaces it takes up. 
+ */
 public class PlaceHolderBlock extends ToggleBlock {
     public PlaceHolderBlock() {
         super(Properties.copy(Blocks.BEDROCK));

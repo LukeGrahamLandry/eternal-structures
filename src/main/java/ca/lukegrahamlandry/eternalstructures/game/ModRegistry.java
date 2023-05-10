@@ -1,15 +1,13 @@
 package ca.lukegrahamlandry.eternalstructures.game;
 
 import ca.lukegrahamlandry.eternalstructures.ModMain;
-import ca.lukegrahamlandry.eternalstructures.game.block.DungeonDoorBlock;
-import ca.lukegrahamlandry.eternalstructures.game.block.LootBlock;
-import ca.lukegrahamlandry.eternalstructures.game.block.PlaceHolderBlock;
-import ca.lukegrahamlandry.eternalstructures.game.block.SpikesBlock;
+import ca.lukegrahamlandry.eternalstructures.game.block.*;
 import ca.lukegrahamlandry.eternalstructures.game.item.DungeonKeyItem;
 import ca.lukegrahamlandry.eternalstructures.game.item.GeoBlockItem;
 import ca.lukegrahamlandry.eternalstructures.game.tile.DungeonDoorTile;
 import ca.lukegrahamlandry.eternalstructures.game.tile.LootTile;
 import ca.lukegrahamlandry.eternalstructures.game.tile.PlaceHolderTile;
+import ca.lukegrahamlandry.eternalstructures.game.tile.ProtectionTile;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -38,6 +36,7 @@ public class ModRegistry {
 
         public static RegistryObject<Block> DUNGEON_DOOR = REGISTRY.register("dungeon_door", DungeonDoorBlock::new);
         public static RegistryObject<Block> PLACE_HOLDER = REGISTRY.register("place_holder", PlaceHolderBlock::new);
+        public static RegistryObject<Block> PROTECTION = REGISTRY.register("protection", ProtectionBlock::new);
 
         private static RegistryObject<Block> createSpike(int damage, DamageSource damageType, String name){
             return REGISTRY.register(name + "_spikes", () -> new SpikesBlock(damage, damageType));
@@ -78,6 +77,7 @@ public class ModRegistry {
         public static RegistryObject<Item> SLIME_SKULL_KEY = REGISTRY.register("slime_skull_key", DungeonKeyItem::new);
 
         public static RegistryObject<Item> DUNGEON_DOOR = REGISTRY.register("dungeon_door", () -> new BlockItem(Blocks.DUNGEON_DOOR.get(), PROPS));
+        public static RegistryObject<Item> PROTECTION = REGISTRY.register("protection", () -> new BlockItem(Blocks.PROTECTION.get(), PROPS));
 
         static {
             for (RegistryObject<Block> block : Blocks.SPIKES){
@@ -100,6 +100,9 @@ public class ModRegistry {
 
         public static RegistryObject<TileEntityType<?>> LOOT = REGISTRY.register("loot",
                 () -> TileEntityType.Builder.of(LootTile::create, Blocks.LOOT.stream().map(RegistryObject::get).toArray(Block[]::new)).build(null));
+
+        public static RegistryObject<TileEntityType<?>> PROTECTION = REGISTRY.register("protection",
+                () -> TileEntityType.Builder.of(ProtectionTile::new, Blocks.PROTECTION.get()).build(null));
     }
 
     public static final ItemGroup TAB = new ItemGroup(0, ModMain.MOD_ID) {

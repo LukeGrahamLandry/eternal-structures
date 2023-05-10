@@ -15,6 +15,7 @@ public class JsonHelper {
             .registerTypeAdapter(CompoundNBT.class, new WrapperLibAdapters.NbtTypeAdapter())
             .registerTypeAdapter(ItemStack.class, new WrapperLibAdapters.ItemStackTypeAdapter())
             .registerTypeAdapter(EffectInstance.class, new WrapperLibAdapters.EffectTypeAdapter())
+            .setPrettyPrinting()
             .create();
 
     public static Gson get() {

@@ -1,6 +1,5 @@
 package ca.lukegrahamlandry.eternalstructures.network.clientbound;
 
-import ca.lukegrahamlandry.eternalstructures.game.tile.DungeonDoorTile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;

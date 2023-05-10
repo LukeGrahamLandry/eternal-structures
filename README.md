@@ -38,7 +38,31 @@ Each type of container has its own default loot table.
 You can set a different one by using the /give command to set the lootTable nbt tag on the item 
 - ex. `/give @p eternalstructures:clay_pot{lootTable:"minecraft:chests/simple_dungeon"}`
 
-## Potential Improvements 
+
+**Structure Protection block**
+
+Creative mode players can right-click block to edit settings. 
+Editing the json in the gui is currently really annoying, but you can copy/paste out into a better text editor. 
+
+Example:
+```json
+{
+  "radius": 10,
+  "potionEffects": [
+    {
+      "effect": "minecraft:speed",
+      "amplifier": 2,
+      "duration": 200
+    }
+  ],
+  "preventBreakAndPlace": true,
+  "preventInteract": true
+}
+```
+
+preventInteract currently stops all left/right clicks, I'll make it more fine-grained soon. 
+
+## TODO (maybe?)
 
 - Lang translations (data gen?)
 
@@ -56,7 +80,7 @@ You can set a different one by using the /give command to set the lootTable nbt 
 - Spike sounds
 - Iron -> bloody & copper -> oxidised 
 - Bloody deal poison & icy give slowness 
-- Deals damage when in the block but not visually touching the spikes 
+- Fix it dealing damage when in the block but not visually touching the spikes 
 
 **Loot Blocks**
 
@@ -69,29 +93,33 @@ You can set a different one by using the /give command to set the lootTable nbt 
   - ChestUtil only does it automatically for carts. `LootrChestTileEntity#stopOpen` does it manually.
   - Who owns which version of the inventory is tracked separately by the stuff in world/data/lootr
   - Only used for `lootr:loot_count`, `/lootr openers`, different visuals for pre-opened blocks
+- Fix [crash with schematics](https://github.com/adam9899/MCE2/issues/119)
 
-**Not Protoblock**
+**Structure Protection block**
 
-- Settings can be just a blob of json instead of fancy interface
-- Potion effects accept any effect by name
-- Radius based block protection (breaking blocks, placing blocks)
 - Customizable particle effect when trying to break blocks in a protected area (accepts entries inside the block)
 - Item to unlock block protection in an area, only applies per player who has the item. 
-  - Click a protoblock in creative to set the item.
-- Plays a customizable sound (enterable inside the block) when the necessary item is retrieved 
+  - Click the block in creative to set the item. 
+    - Could just be in the json? 
+    - Probably need to include nbt tags so being able to just click instead of needing to type it out would be nice 
+- Plays a customizable sound (configure inside the block) when the necessary item is retrieved 
   - Sends a customizable message in chat.
-- Places a cube of barrier blocks within the set range of the protoblock
+- Places a cube of barrier blocks outlining a set range
   - Optional timer to remove the cube 
   - Option to remove the cube on the collection of a selectable item
 - stop flight in the radius, creative, elytra and if possible "jetpack" type of flight
 - enter items that right click won't work in a radius, eg ender pearls or special devices players could use for breaking blocks
-   - data pack tag. per block.
+   - data pack tag. configure per protection block.
+- instant death if you enter a range without the access item
+  - customize death message 
+  - warning message when you get close
+  - do you just forever lose your inventory if you die this way cause your items will drop inside the range?
+- preset jsons in a data pack that you can select in gui, so they can be managed in git instead of structure files. 
 
 **Additions**
 
-- Simplified version of the slime king 
-  - jumps high and falls fast 
-  - summons slimes that make the main entity immune until the slimes are killed 
-  - death animation/boss bar
-  - do drops by loot table
 - Maps that point to structures 
+- Reappearing block 
+  - disappears and reappears after a set time
+  - vanish when player collides or just after set time interval 
+  - shift click with another block in creative to disguise it to look like that

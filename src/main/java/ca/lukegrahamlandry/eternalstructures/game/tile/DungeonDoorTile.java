@@ -44,6 +44,7 @@ public class DungeonDoorTile extends TileEntity implements IAnimatable, ITickabl
     boolean locked = true;
 
     public void onClick(PlayerEntity player, Hand hand){
+        assert level != null;
         if (hand != Hand.MAIN_HAND) return;
 
         ItemStack stack = player.getItemInHand(hand);
