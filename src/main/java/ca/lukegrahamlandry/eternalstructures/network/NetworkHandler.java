@@ -3,8 +3,10 @@ package ca.lukegrahamlandry.eternalstructures.network;
 import ca.lukegrahamlandry.eternalstructures.ModMain;
 import ca.lukegrahamlandry.eternalstructures.network.clientbound.AnimationUpdatePacket;
 import ca.lukegrahamlandry.eternalstructures.network.clientbound.OpenProtectionSettings;
+import ca.lukegrahamlandry.eternalstructures.network.clientbound.OpenSummonSettings;
 import ca.lukegrahamlandry.eternalstructures.network.clientbound.TileInfoPacket;
 import ca.lukegrahamlandry.eternalstructures.network.serverbound.SaveProtectionSettings;
+import ca.lukegrahamlandry.eternalstructures.network.serverbound.SaveSummonSettings;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -20,5 +22,7 @@ public class NetworkHandler {
         INSTANCE.registerMessage(ID++, TileInfoPacket.class, TileInfoPacket::encode, TileInfoPacket::decode, TileInfoPacket::handle);
         INSTANCE.registerMessage(ID++, OpenProtectionSettings.class, OpenProtectionSettings::encode, OpenProtectionSettings::decode, OpenProtectionSettings::handle);
         INSTANCE.registerMessage(ID++, SaveProtectionSettings.class, SaveProtectionSettings::encode, SaveProtectionSettings::decode, SaveProtectionSettings::handle);
+        INSTANCE.registerMessage(ID++, OpenSummonSettings.class, OpenSummonSettings::encode, OpenSummonSettings::decode, OpenSummonSettings::handle);
+        INSTANCE.registerMessage(ID++, SaveSummonSettings.class, SaveSummonSettings::encode, SaveSummonSettings::decode, SaveSummonSettings::handle);
     }
 }

@@ -161,4 +161,4 @@ publishing {
     }
 }
 
-apply from: "https://moddingtutorials.org/applesilicon.gradle"
+// apply from: "https://moddingtutorials.org/applesilicon.gradle"
