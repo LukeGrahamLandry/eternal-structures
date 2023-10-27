@@ -1,0 +1,126 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.boss_alter",
+				"texture_width": 256,
+				"texture_height": 256,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 2.5,
+				"visible_bounds_offset": [0, 0.75, 0]
+			},
+			"bones": [
+				{
+					"name": "main",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "alter",
+					"parent": "main",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-8, 11, -8], "size": [16, 2, 16], "uv": [0, 32]},
+						{"origin": [1, 6, -8], "size": [7, 7, 7], "inflate": 0.2, "uv": [42, 82]},
+						{"origin": [-7, 7, -7], "size": [14, 4, 14], "uv": [0, 52]},
+						{"origin": [-6, 4, -6], "size": [12, 3, 12], "uv": [0, 0]},
+						{"origin": [-7, 2, -7], "size": [14, 2, 14], "uv": [42, 66]},
+						{"origin": [-8, 0, -8], "size": [16, 2, 16], "uv": [48, 48]},
+						{"origin": [-8, 8, -7], "size": [0, 3, 11], "uv": [24, 4]},
+						{"origin": [-9.03015, 13, 5.17101], "size": [6, 4, 0], "uv": [42, 50]},
+						{"origin": [-9.03015, 13, 5.17101], "size": [6, 4, 0], "pivot": [-6.03015, 15, 5.17101], "rotation": [0, -85, 0], "uv": [32, 26]}
+					]
+				},
+				{
+					"name": "robe_f",
+					"parent": "alter",
+					"pivot": [0, 11, -8],
+					"cubes": [
+						{"origin": [-4, 3, -8], "size": [8, 8, 0], "uv": [0, 31], "mirror": true}
+					]
+				},
+				{
+					"name": "robe_b",
+					"parent": "alter",
+					"pivot": [0, 11, 8],
+					"cubes": [
+						{"origin": [-4, 3, 8], "size": [8, 8, 0], "uv": [0, 31]}
+					]
+				},
+				{
+					"name": "book",
+					"parent": "alter",
+					"pivot": [-5.5, 17.5, 4.2],
+					"rotation": [-17.54574, -37.30587, -5.59141],
+					"cubes": [
+						{"origin": [-6, 13, 5.2], "size": [1, 9, 0], "uv": [12, 50]},
+						{"origin": [-6, 13.5, 4.2], "size": [1, 8, 1], "uv": [12, 39]}
+					]
+				},
+				{
+					"name": "page_l",
+					"parent": "book",
+					"pivot": [-5, 17.5, 5.2],
+					"rotation": [0, 35, 0],
+					"cubes": [
+						{"origin": [-5, 13.5, 4.2], "size": [5, 8, 1], "uv": [0, 50]},
+						{"origin": [-5, 13, 5.2], "size": [6, 9, 0], "uv": [0, 39]}
+					]
+				},
+				{
+					"name": "page_r",
+					"parent": "book",
+					"pivot": [-6, 17.5, 5.2],
+					"rotation": [0, -35, 0],
+					"cubes": [
+						{"origin": [-11, 13.5, 4.2], "size": [5, 8, 1], "uv": [36, 0]},
+						{"origin": [-12, 13, 5.2], "size": [6, 9, 0], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "skeleton_candle",
+					"parent": "alter",
+					"pivot": [3.24241, 12.8, 5.09345],
+					"cubes": [
+						{"origin": [-1, 13, 1], "size": [8, 7, 8], "inflate": -0.8, "pivot": [3, 17, 4], "rotation": [0, 12.5, 0], "uv": [0, 70]},
+						{"origin": [-1, 12, 1], "size": [8, 8, 8], "inflate": -1, "pivot": [3, 17, 4], "rotation": [0, 12.5, 0], "uv": [0, 15]},
+						{"origin": [2, 19, 4.2], "size": [2, 4, 2], "pivot": [3, 17, 4], "rotation": [0, 12.5, 0], "uv": [0, 15]},
+						{"origin": [2, 21, 4.2], "size": [2, 2, 2], "inflate": 0.2, "pivot": [3, 17, 4], "rotation": [0, 12.5, 0], "uv": [24, 18]},
+						{"origin": [3.25973, 23, 4.67156], "size": [0, 1, 1], "pivot": [3.25973, 24, 5.17156], "rotation": [0, 42.5, 0], "uv": [0, 8]}
+					]
+				},
+				{
+					"name": "rune",
+					"parent": "main",
+					"pivot": [0, 1, -0.025],
+					"cubes": [
+						{"origin": [-13.3, 1, 6], "size": [3, 0, 12], "pivot": [-11.8, 1, 12], "rotation": [0, 45, 0], "uv": [110, 106], "mirror": true},
+						{"origin": [10.3, 1, 6], "size": [3, 0, 12], "pivot": [11.8, 1, 12], "rotation": [0, -45, 0], "uv": [104, 106]},
+						{"origin": [-18, 1, -13.3], "size": [12, 0, 3], "pivot": [-12, 1, -11.8], "rotation": [0, 45, 0], "uv": [107, 94], "mirror": true},
+						{"origin": [6, 1, -13.3], "size": [12, 0, 3], "pivot": [12, 1, -11.8], "rotation": [0, -45, 0], "uv": [107, 103]},
+						{"origin": [-18.3, 1, -8], "size": [3, 0, 16], "uv": [88, 106], "mirror": true},
+						{"origin": [15.3, 1, -8], "size": [3, 0, 16], "uv": [94, 106]},
+						{"origin": [-8, 1, 14.7], "size": [16, 0, 3], "uv": [107, 97]},
+						{"origin": [-8, 1, -18.3], "size": [16, 0, 3], "uv": [107, 100]}
+					]
+				},
+				{
+					"name": "magic_rune_2",
+					"parent": "main",
+					"pivot": [0, 0.2, 0],
+					"cubes": [
+						{"origin": [-15, 0.2, -15], "size": [30, 0, 30], "uv": [-30, 96]}
+					]
+				},
+				{
+					"name": "magic_rune_1",
+					"parent": "main",
+					"pivot": [0, 0.2, 0],
+					"cubes": [
+						{"origin": [-24, 0.2, -24], "size": [48, 0, 48], "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

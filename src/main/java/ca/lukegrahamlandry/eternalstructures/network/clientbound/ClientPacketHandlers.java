@@ -53,5 +53,9 @@ public class ClientPacketHandlers {
         if (tile instanceof DungeonDoorTile){
             ((DungeonDoorTile) tile).setClientAnimationState(packet.animationState);
         }
+
+        if (tile instanceof SummoningTile){
+            ((SummoningTile) tile).setClientAnimationState(packet.animationState);
+        }
     }
 }
