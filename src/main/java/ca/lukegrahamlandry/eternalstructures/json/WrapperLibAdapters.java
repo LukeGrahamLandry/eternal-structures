@@ -42,10 +42,9 @@ public class WrapperLibAdapters {
     public static class ItemStackTypeAdapter implements JsonDeserializer<ItemStack>, JsonSerializer<ItemStack> {
         public ItemStack deserialize(JsonElement data, Type type, JsonDeserializationContext ctx) throws JsonParseException {
             JsonObject json = data.getAsJsonObject();
-            ResourceLocation itemKey = new ResourceLocation(json.get("item").getAsString());
+            ResourceLocation itemKey = new ResourceLocation(json.has("item") ? json.get("item").getAsString() : "minecraft:air");
             Item item = Registry.ITEM.get(itemKey);
-            int count = json.get("count").getAsInt();
-
+            int count = json.has("count") ? json.get("count").getAsInt() : 1;
             ItemStack stack = new ItemStack(item, count);
 
             if (json.has("tag")){

@@ -78,7 +78,7 @@ public class JsonConfigGui<T> extends Screen {
             this.sync.accept(pos, data);
             this.onClose();
         } catch (JsonSyntaxException e){
-            // ignore
+            // Unreachable
         }
     }
 
@@ -91,6 +91,8 @@ public class JsonConfigGui<T> extends Screen {
             this.save.active = true;
         } catch (JsonSyntaxException e){
             this.save.active = false;
+            this.json = e.getMessage();
+            this.updateLines();
         }
     }
 }

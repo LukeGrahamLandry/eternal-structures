@@ -12,6 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.effect.LightningBoltEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -23,6 +24,7 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
@@ -38,18 +40,17 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class SummoningTile extends TileEntity implements IAnimatable, ITickableTileEntity, IGeoInfo {
     Settings data = new Settings();
     long timeout = 0;
-    UUID theBoss = null;
-    UUID thePlayer = null;
+    @Nullable UUID theBoss = null;
+    @Nullable UUID thePlayer = null;
     int animationTick = 0;
     int animState = 0;
+    boolean freeSummon = false;
 
     private AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
@@ -104,30 +105,52 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
 
     void onBossDefeat(){
         ModMain.LOGGER.debug("Boss defeated!");
+        if (this.thePlayer != null) {
+            Entity player = ((ServerWorld) this.level).getEntity(this.thePlayer);
+            if (player instanceof PlayerEntity) {
+                // TODO: show to all nearby players?
+                if (this.data.bossDeathMessage != null) ((PlayerEntity) player).displayClientMessage(new TranslationTextComponent(this.data.bossDeathMessage), false);
+                ((PlayerEntity) player).giveExperiencePoints(this.data.xpPointsReward);
+            }
+        }
         this.theBoss = null;
         this.thePlayer = null;
+        this.freeSummon = false;
         this.setChanged();
         this.serverStartAnimation(DEFEATED);
         this.startTimeout();
         if (this.data.lootItemStack != null) {
-            this.level.addFreshEntity(new ItemEntity(this.level, this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 1.5, this.worldPosition.getZ() + 0.5, this.data.lootItemStack.copy()));
+            Entity loot = new ItemEntity(this.level, this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 1.5, this.worldPosition.getZ() + 0.5, this.data.lootItemStack.copy());
+            loot.setGlowing(true);
+            this.level.addFreshEntity(loot);
         }
     }
 
     void onPlayerDie(){
         ModMain.LOGGER.debug("Played died!");
-        if (this.theBoss != null) {
-            Entity boss = ((ServerWorld) this.level).getEntity(this.theBoss);
-            if (boss != null)  boss.remove();
-        }
+        Entity boss = this.getBoss();
+        if (boss != null) boss.remove();
         this.theBoss = null;
         this.thePlayer = null;
+        this.freeSummon = true;
         this.setChanged();
         this.serverStartAnimation(IDLE);
 
     }
 
+    @Nullable Entity getBoss() {
+        if (this.theBoss == null) return null;
+        Entity boss = ((ServerWorld) this.level).getEntity(this.theBoss);
+        if (boss != null && !boss.isAlive()) return null;
+        return boss;
+    }
+
     public void rightClick(ServerPlayerEntity player) {
+        if (this.animState != IDLE) {
+            Entity boss = this.getBoss();
+            player.displayClientMessage(new StringTextComponent("The has already been summoned (" + (boss != null ? boss.blockPosition().toString() : "???")+ ")"), true);
+            return;
+        }
         if (this.timeout > 0) {
             long delay = (this.timeout - this.level.getGameTime()) / 20;
             player.displayClientMessage(new StringTextComponent("The boss may be summoned again in " + delay + "seconds"), true);
@@ -173,11 +196,22 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
                         ((LivingEntity) boss).addEffect(effect);
                     }
                 }
+                if (this.data.entityName != null) {
+                    boss.setCustomName(new TranslationTextComponent(this.data.entityName));
+                }
                 this.theBoss = boss.getUUID();
                 ModMain.LOGGER.debug("(summon): Watching boss " + this.theBoss);
                 this.setChanged();
+                this.doLighting();
             }
         }
+    }
+
+    void doLighting() {
+        LightningBoltEntity bolt = EntityType.LIGHTNING_BOLT.create(this.level);
+        bolt.moveTo(Vector3d.atBottomCenterOf(this.worldPosition));
+        bolt.setVisualOnly(false);
+        this.level.addFreshEntity(bolt);
     }
 
     void startTimeout(){
@@ -189,6 +223,7 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
     private static final String NBT_KEY = ModMain.MOD_ID + ":summoning_settings";
     private static final String NBT_KEY_TIMER = ModMain.MOD_ID + ":summoning_timeout";
     private static final String NBT_KEY_BOSS = ModMain.MOD_ID + ":summoning_boss";
+    private static final String NBT_KEY_FREE = ModMain.MOD_ID + ":summoning_free";
 
     @Override
     public CompoundNBT save(CompoundNBT tag) {
@@ -199,6 +234,7 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
         if (this.theBoss != null) {
             tag.putUUID(NBT_KEY_BOSS, this.theBoss);
         }
+        tag.putBoolean(NBT_KEY_FREE, this.freeSummon);
         return super.save(tag);
     }
 
@@ -217,12 +253,9 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
         } else {
             ModMain.LOGGER.error("Missing structure summoning altar settings settings at {}. Using defaults.", this.worldPosition);
         }
-        if (tag.contains(NBT_KEY_TIMER)) {
-            this.timeout = tag.getLong(NBT_KEY_TIMER);
-        }
-        if (tag.contains(NBT_KEY_BOSS)) {
-            this.theBoss = tag.getUUID(NBT_KEY_BOSS);
-        }
+        if (tag.contains(NBT_KEY_TIMER)) this.timeout = tag.getLong(NBT_KEY_TIMER);
+        if (tag.contains(NBT_KEY_BOSS)) this.theBoss = tag.getUUID(NBT_KEY_BOSS);
+        if (tag.contains(NBT_KEY_FREE)) this.freeSummon = tag.getBoolean(NBT_KEY_FREE);
     }
 
     // Called on the server by the packet sent from GUI.
@@ -317,12 +350,15 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
 
     public static class Settings {
         float timeoutMinutes = 20; // 0 = no delay
-        String summonItem;  // = "minecraft:diamond"; // Optional (null = free summon, just right click)
-        String summonMessage = "Boss summoned!";  // Optional (null = no chat message)
+        @Nullable String summonItem;  // = "minecraft:diamond"; // Optional (null = free summon, just right click)
+        @Nullable String summonMessage = "Boss Summoned!";  // Optional (null = no chat message)
+        @Nullable String bossDeathMessage = "Boss Defeated!";  // Optional (null = no chat message)
         String summonEntityType = "minecraft:zombie";
-        ItemStack lootItemStack; //  = "minecraft:golden_apple";
+        @Nullable ItemStack lootItemStack; // Optional. Format: { "item": "minecraft:golden_apple", "count": 1, "tag": "..." }
         boolean consumeItem = true;
         private List<EffectInstance> potionEffects = new ArrayList<>();
+        @Nullable String entityName;  // Optional
+        int xpPointsReward = 0;  // Note: not measured in levels. "points" have diminishing returns as you level up
 
         public String validate(){
             if (summonItem != null && !ForgeRegistries.ITEMS.containsKey(new ResourceLocation(this.summonItem))) {
