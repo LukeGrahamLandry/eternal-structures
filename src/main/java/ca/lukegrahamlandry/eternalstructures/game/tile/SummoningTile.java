@@ -10,10 +10,15 @@ import com.google.gson.JsonSyntaxException;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
@@ -92,12 +97,21 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
         }
     }
 
+    public void setLootReward(ItemStack stack) {
+        this.data.lootItemStack = stack.copy();
+        this.setChanged();
+    }
+
     void onBossDefeat(){
         ModMain.LOGGER.debug("Boss defeated!");
         this.theBoss = null;
         this.thePlayer = null;
         this.setChanged();
         this.serverStartAnimation(DEFEATED);
+        this.startTimeout();
+        if (this.data.lootItemStack != null) {
+            this.level.addFreshEntity(new ItemEntity(this.level, this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 1.5, this.worldPosition.getZ() + 0.5, this.data.lootItemStack.copy()));
+        }
     }
 
     void onPlayerDie(){
@@ -152,9 +166,15 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
         if (summonEntity != null) {
             Entity boss = summonEntity.spawn((ServerWorld) this.level, null, null, this.worldPosition, SpawnReason.MOB_SUMMONED, true, true);
             if (boss != null) {
+                if (boss instanceof LivingEntity) {
+                    for (EffectInstance baseEffect : this.data.potionEffects){
+                        // Copy is required! Don't tick down the duration on the main instance.
+                        EffectInstance effect = new EffectInstance(baseEffect.getEffect(), baseEffect.getDuration(), baseEffect.getAmplifier());
+                        ((LivingEntity) boss).addEffect(effect);
+                    }
+                }
                 this.theBoss = boss.getUUID();
                 ModMain.LOGGER.debug("(summon): Watching boss " + this.theBoss);
-                this.startTimeout();
                 this.setChanged();
             }
         }
@@ -207,6 +227,7 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
 
     // Called on the server by the packet sent from GUI.
     public void setSettings(Settings data) {
+        ModMain.LOGGER.debug("Set summoning altar at {}{} = {}", level.dimension().location(), this.worldPosition, JsonHelper.get().toJson(data));
         this.data = data;
         this.setChanged();
     }
@@ -265,13 +286,22 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
         else this.animationTick = 0;
     }
 
-    static ResourceLocation texture = new ResourceLocation(ModMain.MOD_ID, "textures/summon/boss_alter.png");
+    static ResourceLocation texture_idle = new ResourceLocation(ModMain.MOD_ID, "textures/summon/boss_alter.png");
+
+    static ResourceLocation texture_animated = new ResourceLocation(ModMain.MOD_ID, "textures/summon/boss_alter_glowing_5.png");
+    // TODO: Making a file called `boss_alter_glowing_animation.png.mcmeta` with `{ "animations": {}}` didn't work, just broke uvs. i must be making some dumb mistake.
+    //       I could do it in code i guess but that feels silly.
+    // static ResourceLocation texture_animated = new ResourceLocation(ModMain.MOD_ID, "textures/summon/boss_alter_glowing_animation.png");
+    static ResourceLocation texture_defeat = new ResourceLocation(ModMain.MOD_ID, "textures/summon/boss_alter_defeat.png");
+    static ResourceLocation texture_starting = new ResourceLocation(ModMain.MOD_ID, "textures/summon/boss_alter_operation.png");
+    static List<ResourceLocation> TEXTURES = Arrays.asList(texture_idle, texture_starting, texture_animated, texture_defeat);
+
     static ResourceLocation model = new ResourceLocation(ModMain.MOD_ID, "geo/boss_alter.geo.json");
     static ResourceLocation animation = new ResourceLocation(ModMain.MOD_ID, "animations/boss_alter.animation.json");
 
     @Override
     public ResourceLocation getTextureResource() {
-        return texture;
+        return TEXTURES.get(this.animState);
     }
 
     @Override
@@ -286,19 +316,17 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
 
 
     public static class Settings {
-        float timeoutMinutes = 20;
-        String summonItem;  // = "minecraft:diamond";
-        String summonMessage = "Boss summoned!";
+        float timeoutMinutes = 20; // 0 = no delay
+        String summonItem;  // = "minecraft:diamond"; // Optional (null = free summon, just right click)
+        String summonMessage = "Boss summoned!";  // Optional (null = no chat message)
         String summonEntityType = "minecraft:zombie";
-        String lootItem; //  = "minecraft:golden_apple";
+        ItemStack lootItemStack; //  = "minecraft:golden_apple";
         boolean consumeItem = true;
+        private List<EffectInstance> potionEffects = new ArrayList<>();
 
         public String validate(){
             if (summonItem != null && !ForgeRegistries.ITEMS.containsKey(new ResourceLocation(this.summonItem))) {
                 return "(summonItem) No item registered as " + new ResourceLocation(this.summonItem);
-            }
-            if (this.lootItem != null && !ForgeRegistries.ITEMS.containsKey(new ResourceLocation(this.lootItem))) {
-                return "(lootItem) No item registered as " + new ResourceLocation(this.lootItem);
             }
             if (!ForgeRegistries.ENTITIES.containsKey(new ResourceLocation(this.summonEntityType))) {
                 return "(summonEntityType) No entity registered as " + new ResourceLocation(this.summonEntityType);

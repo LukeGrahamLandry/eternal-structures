@@ -1,9 +1,11 @@
 package ca.lukegrahamlandry.eternalstructures.game.block;
 
+import ca.lukegrahamlandry.eternalstructures.ModMain;
 import ca.lukegrahamlandry.eternalstructures.game.ModRegistry;
 import ca.lukegrahamlandry.eternalstructures.game.tile.LootTile;
 import ca.lukegrahamlandry.eternalstructures.game.tile.ProtectionTile;
 import ca.lukegrahamlandry.eternalstructures.game.tile.SummoningTile;
+import ca.lukegrahamlandry.eternalstructures.json.JsonHelper;
 import ca.lukegrahamlandry.eternalstructures.network.NetworkHandler;
 import ca.lukegrahamlandry.eternalstructures.network.clientbound.OpenProtectionSettings;
 import ca.lukegrahamlandry.eternalstructures.network.clientbound.OpenSummonSettings;
@@ -53,15 +55,20 @@ public class SummoningBlock extends Block {
     }
 
     @Override
-    public ActionResultType use(BlockState p_225533_1_, World level, BlockPos pos, PlayerEntity player, Hand p_225533_5_, BlockRayTraceResult p_225533_6_) {
-        if (!level.isClientSide()) {
+    public ActionResultType use(BlockState p_225533_1_, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult p_225533_6_) {
+        if (!level.isClientSide() && hand == Hand.MAIN_HAND) {
             TileEntity tile = level.getBlockEntity(pos);
             if (tile instanceof SummoningTile) {
-                if (player.isCreative() && player.isShiftKeyDown()){
-                    NetworkHandler.INSTANCE.send(
-                            PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
-                            new OpenSummonSettings(pos, ((SummoningTile)tile).getSettings())
-                    );
+                if (player.isCreative()){
+                    if (player.getOffhandItem().isEmpty()) {
+                        NetworkHandler.INSTANCE.send(
+                                PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player),
+                                new OpenSummonSettings(pos, ((SummoningTile)tile).getSettings())
+                        );
+                    } else {
+                        ((SummoningTile)tile).setLootReward(player.getOffhandItem());
+                        player.displayClientMessage(new StringTextComponent("Set lootItem to " + JsonHelper.get().toJson(player.getOffhandItem())), true);
+                    }
                 } else {
                     ((SummoningTile)tile).rightClick((ServerPlayerEntity) player);
                 }
