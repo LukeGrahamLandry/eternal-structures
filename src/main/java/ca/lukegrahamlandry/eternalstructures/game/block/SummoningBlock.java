@@ -34,7 +34,7 @@ import static net.minecraft.block.DoorBlock.OPEN;
 // TODO: this is a copy-paste from protection
 public class SummoningBlock extends Block {
     public SummoningBlock() {
-        super(Properties.copy(Blocks.BEDROCK));
+        super(Properties.copy(Blocks.BEDROCK).noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(HorizontalBlock.FACING, Direction.NORTH));
     }
 

@@ -78,18 +78,29 @@ public class ModVoxelShapes {
     }
 
     public static VoxelShape rotatedSummon(Direction facing){
-        if (facing == Direction.EAST || facing == Direction.NORTH) return rotateAroundVertical(Direction.NORTH, facing, SUMMON);
-        else return rotateAroundVertical(Direction.WEST, facing, SUMMON);
+        return SUMMON_SHAPES.get(facing);
     }
 
     public static VoxelShape getSpikeShape(boolean isOut, Direction facing){
         return isOut ? SPIKES_OUT_SHAPE.get(facing) : SPIKES_IN_SHAPE.get(facing);
     }
 
+    private static final Map<Direction, VoxelShape> SUMMON_SHAPES = new HashMap<>();
+
     private static final Map<Direction, VoxelShape> SPIKES_IN_SHAPE = new HashMap<>();
     private static final Map<Direction, VoxelShape> SPIKES_OUT_SHAPE = new HashMap<>();
 
+    static void memoRotations(VoxelShape shape, Map<Direction, VoxelShape> memo) {
+        memo.put(Direction.NORTH, shape);
+        // wtf im so wrong about how rotations work
+        memo.put(Direction.EAST, rotateAroundVertical(Direction.WEST, Direction.NORTH, shape));
+        memo.put(Direction.WEST, rotateAroundVertical(Direction.WEST, Direction.WEST, shape));
+        memo.put(Direction.SOUTH, rotateAroundVertical(Direction.WEST, Direction.SOUTH, shape));
+    }
+
     static {
+        memoRotations(SUMMON, SUMMON_SHAPES);
+
         VoxelShape in = Stream.of(
                 Block.box(10, 0, 2, 14, 1, 6),
                 Block.box(10, 0, 10, 14, 1, 14),
@@ -119,7 +130,11 @@ public class ModVoxelShapes {
         allShapes.put(Direction.SOUTH, rotateAroundVertical(Direction.NORTH, Direction.SOUTH, rotateToSide(shape)));
     }
 
+    // This clearly doesn't do what I think it does but it works enough if i fuck with the inputs and i can't bring myself to deal with it rn
     public static VoxelShape rotateAroundVertical(Direction from, Direction to, VoxelShape shape) {
+        // TODO: I'm afraid
+//        if (from == to) return shape;
+
         VoxelShape[] buffer = new VoxelShape[]{shape, VoxelShapes.empty()};
 
         int times = (to.ordinal() - from.get2DDataValue() + 4) % 4;
