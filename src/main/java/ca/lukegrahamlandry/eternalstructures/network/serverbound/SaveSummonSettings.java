@@ -1,6 +1,5 @@
 package ca.lukegrahamlandry.eternalstructures.network.serverbound;
 
-import ca.lukegrahamlandry.eternalstructures.game.tile.ProtectionTile;
 import ca.lukegrahamlandry.eternalstructures.game.tile.SummoningTile;
 import ca.lukegrahamlandry.eternalstructures.json.JsonHelper;
 import ca.lukegrahamlandry.eternalstructures.network.clientbound.OpenProtectionSettings;

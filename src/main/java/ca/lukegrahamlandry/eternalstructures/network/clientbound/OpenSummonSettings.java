@@ -2,7 +2,6 @@ package ca.lukegrahamlandry.eternalstructures.network.clientbound;
 
 import ca.lukegrahamlandry.eternalstructures.game.tile.SummoningTile;
 import ca.lukegrahamlandry.eternalstructures.json.JsonHelper;
-import ca.lukegrahamlandry.eternalstructures.protect.ProtectionInstance;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.network.NetworkEvent;

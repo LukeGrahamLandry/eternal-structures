@@ -4,7 +4,6 @@ import ca.lukegrahamlandry.eternalstructures.game.ModRegistry;
 import ca.lukegrahamlandry.eternalstructures.game.tile.ProtectionTile;
 import ca.lukegrahamlandry.eternalstructures.network.NetworkHandler;
 import ca.lukegrahamlandry.eternalstructures.network.clientbound.OpenProtectionSettings;
-import ca.lukegrahamlandry.eternalstructures.protect.ProtectionManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -18,7 +17,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;

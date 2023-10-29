@@ -2,7 +2,6 @@ package ca.lukegrahamlandry.eternalstructures.game;
 
 import ca.lukegrahamlandry.eternalstructures.ModMain;
 import ca.lukegrahamlandry.eternalstructures.game.block.*;
-import ca.lukegrahamlandry.eternalstructures.game.item.DungeonKeyItem;
 import ca.lukegrahamlandry.eternalstructures.game.item.GeoBlockItem;
 import ca.lukegrahamlandry.eternalstructures.game.tile.*;
 import net.minecraft.block.Block;
@@ -72,8 +71,8 @@ public class ModRegistry {
     public static class Items {
         private static DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, ModMain.MOD_ID);
 
-        public static RegistryObject<Item> SKULL_KEY = REGISTRY.register("skull_key", DungeonKeyItem::new);
-        public static RegistryObject<Item> SLIME_SKULL_KEY = REGISTRY.register("slime_skull_key", DungeonKeyItem::new);
+        public static RegistryObject<Item> SKULL_KEY = REGISTRY.register("skull_key", () -> new Item(PROPS));
+        public static RegistryObject<Item> SLIME_SKULL_KEY = REGISTRY.register("slime_skull_key", () -> new Item(PROPS));
 
         public static RegistryObject<Item> DUNGEON_DOOR = REGISTRY.register("dungeon_door", () -> new BlockItem(Blocks.DUNGEON_DOOR.get(), PROPS));
         public static RegistryObject<Item> PROTECTION = REGISTRY.register("protection", () -> new BlockItem(Blocks.PROTECTION.get(), PROPS));

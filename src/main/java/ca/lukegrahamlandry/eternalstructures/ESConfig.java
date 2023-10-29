@@ -8,8 +8,6 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 public class ESConfig {
     private static final ForgeConfigSpec.Builder server_builder = new ForgeConfigSpec.Builder();

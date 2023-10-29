@@ -3,7 +3,6 @@ package ca.lukegrahamlandry.eternalstructures.datagen;
 import ca.lukegrahamlandry.eternalstructures.ModMain;
 import ca.lukegrahamlandry.eternalstructures.game.ModRegistry;
 import ca.lukegrahamlandry.eternalstructures.game.block.SpikesBlock;
-import ca.lukegrahamlandry.eternalstructures.game.item.GeoBlockItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.data.DataGenerator;

@@ -5,11 +5,11 @@ import ca.lukegrahamlandry.eternalstructures.ModMain;
 import ca.lukegrahamlandry.eternalstructures.game.ModRegistry;
 import ca.lukegrahamlandry.eternalstructures.game.block.DungeonDoorBlock;
 import ca.lukegrahamlandry.eternalstructures.game.block.ToggleBlock;
-import ca.lukegrahamlandry.eternalstructures.game.item.DungeonKeyItem;
 import ca.lukegrahamlandry.eternalstructures.network.NetworkHandler;
 import ca.lukegrahamlandry.eternalstructures.network.clientbound.AnimationUpdatePacket;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
@@ -49,7 +49,9 @@ public class DungeonDoorTile extends TileEntity implements IAnimatable, ITickabl
 
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!(stack.getItem() instanceof DungeonKeyItem)){
+        // TODO: should be a tag
+        boolean holdingKey = stack.getItem() == ModRegistry.Items.SKULL_KEY.get() || stack.getItem() == ModRegistry.Items.SLIME_SKULL_KEY.get();
+        if (!holdingKey){
             if (this.locked && !player.isCreative()){
                 player.displayClientMessage(new TranslationTextComponent("eternalstructures.message.need_door_key"), true);
             } else if (ESConfig.allowClosingUnlockedDungeonDoors.get()){
@@ -59,13 +61,13 @@ public class DungeonDoorTile extends TileEntity implements IAnimatable, ITickabl
             }
         } else if (player.isCreative()){
             player.displayClientMessage(new TranslationTextComponent("eternalstructures.message.bound_key"), true);
-            DungeonKeyItem.setKeyId(stack, this.doorId);
+            setKeyId(stack, this.doorId);
             player.setItemInHand(hand, stack);
             this.locked = true;
             this.open = false;
             this.sendAnimationState(ANIM_SET_CLOSE);
         } else {
-            int keyId = DungeonKeyItem.getKeyId(stack);
+            int keyId = getKeyId(stack);
             if (keyId != this.doorId) {
                 player.displayClientMessage(new TranslationTextComponent("eternalstructures.message.wrong_key_id"), true);
                 return;
@@ -195,5 +197,19 @@ public class DungeonDoorTile extends TileEntity implements IAnimatable, ITickabl
         tag.putInt("time", animationTick);
         tag.putBoolean("open", open);
         return tag;
+    }
+
+    public static int getKeyId(ItemStack stack) {
+        CompoundNBT tag = stack.getOrCreateTag();
+        if (tag.contains("keyid")){
+            return tag.getInt("keyid");
+        }
+        return 0;
+    }
+
+    public static void setKeyId(ItemStack stack, int id) {
+        CompoundNBT tag = stack.getOrCreateTag();
+        tag.putInt("keyid", id);
+        stack.setTag(tag);
     }
 }

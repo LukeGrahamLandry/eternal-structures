@@ -1,13 +1,9 @@
 package ca.lukegrahamlandry.eternalstructures.game.block;
 
-import ca.lukegrahamlandry.eternalstructures.ModMain;
 import ca.lukegrahamlandry.eternalstructures.game.ModRegistry;
-import ca.lukegrahamlandry.eternalstructures.game.tile.LootTile;
-import ca.lukegrahamlandry.eternalstructures.game.tile.ProtectionTile;
 import ca.lukegrahamlandry.eternalstructures.game.tile.SummoningTile;
 import ca.lukegrahamlandry.eternalstructures.json.JsonHelper;
 import ca.lukegrahamlandry.eternalstructures.network.NetworkHandler;
-import ca.lukegrahamlandry.eternalstructures.network.clientbound.OpenProtectionSettings;
 import ca.lukegrahamlandry.eternalstructures.network.clientbound.OpenSummonSettings;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,8 +24,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-
-import static net.minecraft.block.DoorBlock.OPEN;
 
 // TODO: this is a copy-paste from protection
 public class SummoningBlock extends Block {

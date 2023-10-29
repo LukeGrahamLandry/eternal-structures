@@ -1,10 +1,7 @@
 package ca.lukegrahamlandry.eternalstructures.client.gui;
 
 import ca.lukegrahamlandry.eternalstructures.json.JsonHelper;
-import ca.lukegrahamlandry.eternalstructures.network.NetworkHandler;
 import ca.lukegrahamlandry.eternalstructures.network.clientbound.OpenProtectionSettings;
-import ca.lukegrahamlandry.eternalstructures.network.serverbound.SaveProtectionSettings;
-import ca.lukegrahamlandry.eternalstructures.protect.ProtectionInstance;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
@@ -12,12 +9,9 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextComponent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.BiConsumer;
 
 public class JsonConfigGui<T> extends Screen {

@@ -2,7 +2,6 @@ package ca.lukegrahamlandry.eternalstructures.game.block;
 
 import ca.lukegrahamlandry.eternalstructures.game.tile.LootTile;
 import ca.lukegrahamlandry.eternalstructures.game.tile.LootrHelper;
-import ca.lukegrahamlandry.eternalstructures.game.tile.LootrLootTile;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -19,7 +18,6 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.ModList;
-import noobanidus.mods.lootr.util.ChestUtil;
 
 import javax.annotation.Nullable;
 
