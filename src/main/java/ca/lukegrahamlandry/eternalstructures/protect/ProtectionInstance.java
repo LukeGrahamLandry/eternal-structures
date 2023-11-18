@@ -17,6 +17,7 @@ import java.util.*;
 
 public class ProtectionInstance {
     public static class Settings {
+        // These can't be final no matter how badly intellij wants it! Old gson version says no.
         private int radius = 5;
         private List<EffectInstance> potionEffects = new ArrayList<>();
         private boolean preventBreakAndPlace = true;

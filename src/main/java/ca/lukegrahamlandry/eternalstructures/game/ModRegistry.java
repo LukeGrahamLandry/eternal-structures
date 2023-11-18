@@ -28,7 +28,7 @@ public class ModRegistry {
     }
 
     public static class Blocks {
-        private static DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, ModMain.MOD_ID);
+        private static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, ModMain.MOD_ID);
 
         public static RegistryObject<Block> DUNGEON_DOOR = REGISTRY.register("dungeon_door", DungeonDoorBlock::new);
         public static RegistryObject<Block> PLACE_HOLDER = REGISTRY.register("place_holder", PlaceHolderBlock::new);
@@ -69,7 +69,7 @@ public class ModRegistry {
     }
 
     public static class Items {
-        private static DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, ModMain.MOD_ID);
+        private static final DeferredRegister<Item> REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, ModMain.MOD_ID);
 
         public static RegistryObject<Item> SKULL_KEY = REGISTRY.register("skull_key", () -> new Item(PROPS));
         public static RegistryObject<Item> SLIME_SKULL_KEY = REGISTRY.register("slime_skull_key", () -> new Item(PROPS));
@@ -89,7 +89,7 @@ public class ModRegistry {
     }
 
     public static class Tiles {
-        private static DeferredRegister<TileEntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, ModMain.MOD_ID);
+        private static final DeferredRegister<TileEntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, ModMain.MOD_ID);
 
         public static RegistryObject<TileEntityType<?>> DUNGEON_DOOR = REGISTRY.register("dungeon_door",
                 () -> TileEntityType.Builder.of(DungeonDoorTile::new, Blocks.DUNGEON_DOOR.get()).build(null));

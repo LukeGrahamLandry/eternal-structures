@@ -29,10 +29,11 @@ public abstract class ToggleBlock extends Block {
 
     public boolean isPathfindable(BlockState p_196266_1_, IBlockReader p_196266_2_, BlockPos p_196266_3_, PathType p_196266_4_) {
         switch(p_196266_4_) {
-            case LAND:
+            case LAND:  // Fallthrough
             case AIR:
                 return p_196266_1_.getValue(OPEN);
-            default:
+            case WATER:  // Fallthrough
+            default:  // Java doesn't have exhaustive switch statements, so it thinks there might be more options.
                 return false;
         }
     }

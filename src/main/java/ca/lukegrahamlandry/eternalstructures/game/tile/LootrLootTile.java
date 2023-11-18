@@ -20,9 +20,9 @@ import java.util.UUID;
 public class LootrLootTile extends LootTile implements ILootTile {
     @Override
     public void fillWithLoot(PlayerEntity player, IInventory inv, ResourceLocation forcedTable, long seed) {
-        if (!this.hasLevel() || this.level.getServer() == null || player == null) return;
-
         ResourceLocation actual = forcedTable != null ? forcedTable : this.savedLootTable;
+        if (!this.hasLevel() || this.level.getServer() == null || player == null || actual == null) return;
+
         LootTable table = this.level.getServer().getLootTables().get(actual);
         if (table == LootTable.EMPTY) {
             ModMain.LOGGER.error("Invalid container loot table: " + actual);

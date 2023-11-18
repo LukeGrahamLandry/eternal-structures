@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+// TODO: don't have the insanely precise numbers
 public class ModVoxelShapes {
     public static final VoxelShape POT = Stream.of(
             Block.box(3, 1, 3, 13, 11, 13),

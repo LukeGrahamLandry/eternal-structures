@@ -28,6 +28,8 @@ import java.util.Random;
 
 public class SpikesBlock extends Block {
     public static final BooleanProperty SPIKES_OUT = BooleanProperty.create("spikes_out");
+    // TODO: i don't remember why i wanted the reaction offset a cycle from when it detects you
+    //       In any case, this is broken if a spike is at the same pos in different dimensions but like,,,, how likely is that, right?
     private static final Map<BlockPos, Boolean> targetState = new HashMap<>();
 
     DamageSource damageType;
