@@ -49,7 +49,7 @@ public class SaveSummonSettings {
                 if (!msg.isEmpty()) {
                     player.displayClientMessage(new StringTextComponent(msg), false);
                 }
-
+                // TODO: do want to save what they typed but need to not try to use it in the tile if its not valid
                 ((SummoningTile) tile).setSettings(packet.data);
                 player.displayClientMessage(new StringTextComponent("Settings have been updated."), true);
             }

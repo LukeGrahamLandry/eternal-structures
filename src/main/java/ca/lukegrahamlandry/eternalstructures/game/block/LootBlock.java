@@ -1,7 +1,7 @@
 package ca.lukegrahamlandry.eternalstructures.game.block;
 
 import ca.lukegrahamlandry.eternalstructures.game.tile.LootTile;
-import ca.lukegrahamlandry.eternalstructures.game.tile.LootrHelper;
+import ca.lukegrahamlandry.eternalstructures.compat.LootrHelper;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;

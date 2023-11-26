@@ -1,18 +1,21 @@
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply plugin: 'org.spongepowered.mixin'
 
-version = '0.5.0'
+version = '0.6.0'
 group = 'ca.lukegrahamlandry.eternalstructures' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'eternalstructures'
 
@@ -123,8 +126,11 @@ dependencies {
     // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
+    annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.16.5:3.0.106')
     compileOnly fg.deobf('curse.maven:lootr-361276:4110873')
+    implementation fg.deobf("curse.maven:gateways-to-eternity-417802:4552976")
+    implementation fg.deobf("curse.maven:placebo-283644:4501015")
 }
 
 // Example for how to get properties into the manifest for reading by the runtime..

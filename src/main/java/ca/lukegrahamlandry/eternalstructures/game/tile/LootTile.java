@@ -2,6 +2,7 @@ package ca.lukegrahamlandry.eternalstructures.game.tile;
 
 import ca.lukegrahamlandry.eternalstructures.ModMain;
 import ca.lukegrahamlandry.eternalstructures.client.IGeoInfo;
+import ca.lukegrahamlandry.eternalstructures.compat.LootrHelper;
 import ca.lukegrahamlandry.eternalstructures.game.ModRegistry;
 import ca.lukegrahamlandry.eternalstructures.game.block.LootBlock;
 import ca.lukegrahamlandry.eternalstructures.network.NetworkHandler;

@@ -1,5 +1,7 @@
-package ca.lukegrahamlandry.eternalstructures.game.tile;
+package ca.lukegrahamlandry.eternalstructures.compat;
 
+import ca.lukegrahamlandry.eternalstructures.game.tile.LootTile;
+import ca.lukegrahamlandry.eternalstructures.game.tile.LootrLootTile;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;

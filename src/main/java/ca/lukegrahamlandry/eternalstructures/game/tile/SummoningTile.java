@@ -2,6 +2,7 @@ package ca.lukegrahamlandry.eternalstructures.game.tile;
 
 import ca.lukegrahamlandry.eternalstructures.ModMain;
 import ca.lukegrahamlandry.eternalstructures.client.IGeoInfo;
+import ca.lukegrahamlandry.eternalstructures.compat.GatewayHelper;
 import ca.lukegrahamlandry.eternalstructures.game.ModRegistry;
 import ca.lukegrahamlandry.eternalstructures.json.JsonHelper;
 import ca.lukegrahamlandry.eternalstructures.network.NetworkHandler;
@@ -24,10 +25,12 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.ResourceLocationException;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -184,27 +187,55 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
         this.serverStartAnimation(ACTIVATE);
     }
 
+    @Nullable PlayerEntity getSummoner() {
+        if (this.thePlayer == null) return null;
+        Entity player = ((ServerWorld) this.level).getEntity(this.thePlayer);
+        if (!(player instanceof PlayerEntity)) return null;
+        return (PlayerEntity) player;
+    }
+
     void actuallySummon() {
-        EntityType<?> summonEntity = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(this.data.summonEntityType));
-        if (summonEntity != null) {
-            Entity boss = summonEntity.spawn((ServerWorld) this.level, null, null, this.worldPosition, SpawnReason.MOB_SUMMONED, true, true);
-            if (boss != null) {
-                if (boss instanceof LivingEntity) {
-                    for (EffectInstance baseEffect : this.data.potionEffects){
-                        // Copy is required! Don't tick down the duration on the main instance.
-                        EffectInstance effect = new EffectInstance(baseEffect.getEffect(), baseEffect.getDuration(), baseEffect.getAmplifier());
-                        ((LivingEntity) boss).addEffect(effect);
-                    }
-                }
-                if (this.data.entityName != null) {
-                    boss.setCustomName(new TranslationTextComponent(this.data.entityName));
-                }
-                this.theBoss = boss.getUUID();
-                ModMain.LOGGER.debug("(summon): Watching boss " + this.theBoss);
-                this.setChanged();
-                this.doLighting();
+        Entity boss = null;
+        if (this.data.summonEntityType != null) {
+            EntityType<?> summonEntity = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(this.data.summonEntityType));
+            if (summonEntity != null) {
+                boss = summonEntity.spawn((ServerWorld) this.level, null, null, this.worldPosition, SpawnReason.MOB_SUMMONED, true, true);
             }
         }
+        if (this.data.gateway != null) {
+            if (this.getSummoner() == null)  {
+                ModMain.LOGGER.error("Couldn't find summoner. Can't create gateway.");
+                return;
+            }
+            if (!ModList.get().isLoaded("gateways")) {
+                ModMain.LOGGER.error("Gateways to Eternity mod is not installed!");
+                return;
+            }
+
+            boss = GatewayHelper.start(this.data.gateway, this.getSummoner(), this.worldPosition);
+        }
+
+
+
+        if (boss == null) {
+            ModMain.LOGGER.error("Altar at " + this.getBlockPos() + " failed to summon boss!");
+            return;
+        }
+
+        if (boss instanceof LivingEntity) {
+            for (EffectInstance baseEffect : this.data.potionEffects){
+                // Copy is required! Don't tick down the duration on the main instance.
+                EffectInstance effect = new EffectInstance(baseEffect.getEffect(), baseEffect.getDuration(), baseEffect.getAmplifier());
+                ((LivingEntity) boss).addEffect(effect);
+            }
+        }
+        if (this.data.entityName != null) {
+            boss.setCustomName(new TranslationTextComponent(this.data.entityName));
+        }
+        this.theBoss = boss.getUUID();
+        ModMain.LOGGER.debug("(summon): Watching boss " + this.theBoss);
+        this.setChanged();
+        this.doLighting();
     }
 
     void doLighting() {
@@ -353,7 +384,8 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
         @Nullable String summonItem;  // = "minecraft:diamond"; // Optional (null = free summon, just right click)
         @Nullable String summonMessage = "Boss Summoned!";  // Optional (null = no chat message)
         @Nullable String bossDeathMessage = "Boss Defeated!";  // Optional (null = no chat message)
-        String summonEntityType = "minecraft:zombie";
+        String summonEntityType = null;
+        String gateway = null;
         @Nullable ItemStack lootItemStack; // Optional. Format: { "item": "minecraft:golden_apple", "count": 1, "tag": "..." }
         boolean consumeItem = true;
         private List<EffectInstance> potionEffects = new ArrayList<>();
@@ -361,13 +393,31 @@ public class SummoningTile extends TileEntity implements IAnimatable, ITickableT
         int xpPointsReward = 0;  // Note: not measured in levels. "points" have diminishing returns as you level up
 
         public String validate(){
-            if (summonItem != null && !ForgeRegistries.ITEMS.containsKey(new ResourceLocation(this.summonItem))) {
-                return "(summonItem) No item registered as " + new ResourceLocation(this.summonItem);
-            }
-            if (!ForgeRegistries.ENTITIES.containsKey(new ResourceLocation(this.summonEntityType))) {
-                return "(summonEntityType) No entity registered as " + new ResourceLocation(this.summonEntityType);
-            }
+            try {
+                if (summonItem != null && !ForgeRegistries.ITEMS.containsKey(new ResourceLocation(this.summonItem))) {
+                    return "(summonItem) No item registered as " + new ResourceLocation(this.summonItem);
+                }
+                if (this.summonEntityType != null &&!ForgeRegistries.ENTITIES.containsKey(new ResourceLocation(this.summonEntityType))) {
+                    return "(summonEntityType) No entity registered as " + new ResourceLocation(this.summonEntityType);
+                }
 
+                if (this.gateway != null) {
+                    if (!ModList.get().isLoaded("gateways")) {
+                        return "Gateways to Eternity mod is not installed!";
+                    }
+                    if (!GatewayHelper.isValid(this.gateway)) {
+                        return "(gateway) No gateway registered as " + this.gateway;
+                    }
+                }
+                if (this.summonEntityType == null && this.gateway == null) {
+                    return "Either summonEntityType or gateway must be set";
+                }
+                if (this.summonEntityType != null && this.gateway != null) {
+                    return "Setting both summonEntityType and gateway is not supported.";
+                }
+            } catch (ResourceLocationException e) {
+                return e.getMessage();
+            }
             return "";
         }
     }

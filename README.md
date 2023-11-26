@@ -8,7 +8,7 @@
 **Dependencies**
 
 - Required: [Geckolib](https://www.curseforge.com/minecraft/mc-mods/geckolib)
-- Optional: [Lootr](https://www.curseforge.com/minecraft/mc-mods/lootr)
+- Optional: [Lootr](https://www.curseforge.com/minecraft/mc-mods/lootr), [Gateways To Eternity](https://www.curseforge.com/minecraft/mc-mods/gateways-to-eternity)
 
 # Features
 
